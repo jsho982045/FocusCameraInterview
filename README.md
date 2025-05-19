@@ -84,9 +84,9 @@ Here are the API endpoints I created:
     
 ## My Approach (How I Built It)
 
-To complete this Task Manager API assignment using Laravel, I took the following steps and made these implementation choices:
+To complete this Task Manager API assignment, I took the following steps and made these implementation choices:
 
-* **Project Setup & Core Components:** I began by setting up a new Laravel project. As instructed, I then created the necessary `Task` model (to represent a task), a database migration file (to define the `tasks` table structure), and a `TaskController` (to handle the API logic for tasks).
+* **Project Setup & Core Components:** I began by setting up a new Laravel project.  I then created the necessary `Task` model (to represent a task), a database migration file (to define the `tasks` table structure), and a `TaskController` (to handle the API logic for tasks).
 
 * **Database with SQLite:** For the database, I configured the Laravel project to use SQLite. I opted for SQLite because it's file-based, which simplifies setup for a development task like this as it doesn't require a separate database server. The `tasks` table schema included `id`, `title`, `description`, `is_completed`, and the automatic `created_at`/`updated_at` timestamps, as specified.
 
@@ -94,12 +94,20 @@ To complete this Task Manager API assignment using Laravel, I took the following
     * Using standard HTTP methods: `GET` (to retrieve tasks), `POST` (to create tasks), `PUT` (to update tasks), and `DELETE` (to remove tasks).
     * Ensuring the API returns appropriate HTTP status codes (e.g., `200` for success, `201` for created, `204` for successful deletion with no content, `404` for not found, and `422` for validation errors).
 
-* **Eloquent ORM for Database Interactions:** As per the requirement to use Eloquent ORM, all interactions with the `tasks` database table were handled through the `Task` model. This allowed for a clean, object-oriented way to perform create, read, update, and delete operations (e.g., `Task::all()`, `Task::findOrFail($id)`, `Task::create()`, `$task->update()`, `$task->delete()`).
+* **Eloquent ORM for Database Interactions:** As per the requirement to use Eloquent ORM, all interactions with the `tasks` database table were handled through the `Task` model. This allowed for a clean, object-oriented way to perform create, read, update, and delete operations (e.g., `Task::all()`, `Task::create()`, `$task->fill()`, `$task->save()`, `$task->delete()`). For retrieving, updating, and deleting specific tasks, I utilized Laravel's implicit route model binding in the `TaskController`.
 
 * **Request Validation:** To meet the requirement for validating incoming requests, I implemented validation logic within the `TaskController`'s `store` (create) and `update` methods using Laravel's `Validator` facade. This ensures that, for example, the `title` is always provided and that fields match their expected types (string, boolean). If validation fails, the API returns a `422` status code with details about the errors.
 
-* **Handling "Not Found" Errors:** For operations that target a specific task by its ID (show, update, delete), I used Eloquent's `findOrFail()` method. This is a convenient way to automatically handle cases where a task ID doesn't exist, as Laravel will then return the appropriate `404 Not Found` JSON response.
+* **Handling "Not Found" Errors:** To handle cases where a specific task ID might not exist during `show`, `update`, or `delete` operations, I leveraged Laravel's implicit route model binding (e.g. `Task $task` in the controller method signature). This feature automatically attempts to find the `Task` model based on the ID in the URL. If the task doesn't exist, Laravel automatically triggers a `404 Not Found` response, fulfilling the need for appropriate error handling without needing to manually call `Task::findOrFail()` in those controller methods.
 
-* **Controller Logic & JSON Responses:** The `TaskController` houses all the specific logic for each API endpoint. Each method in the controller is responsible for processing the request, interacting with the `Task` model, and then returning a JSON response, as required for an API.
+* **Controller Logic & JSON Responses:** The `TaskController` houses all the specific logic for each API endpoint. Each method in the controller is responsible for processing the request, interacting with the `Task` model (often injected via route model binding), and then returning a JSON response, as required for an API.
 
 * **API Routing:** I defined the API routes in Laravel's `routes/api.php` file, using `Route::apiResource('tasks', TaskController::class);`. This efficiently sets up all the standard RESTful routes for the `Task` resource and maps them to the corresponding methods in the `TaskController`.
+
+* **Key Files I Worked On:**
+    * `app/Models/Task.php`: Defined the Task model, its `$fillable` properties (for mass assignment), and `$casts` (for data types like boolean).
+    * `app/Http/Controllers/Api/TaskController.php`: Implemented all the API methods (index, store, show, update, destroy), including validation and using route model binding.
+    * `database/migrations/YYYY_MM_DD_HHMMSS_create_tasks_table.php` (timestamped file): Defined the database structure for the `tasks` table.
+    * `routes/api.php`: Set up the API endpoints.
+    * `.env`: Ensured this was configured for SQLite (which Laravel did by default)
+    * This `README.md` file: To document the project.
