@@ -107,7 +107,7 @@ To complete this Task Manager API assignment, I took the following steps and mad
 * **Key Files I Worked On:**
     * `app/Models/Task.php`: Defined the Task model, its `$fillable` properties (for mass assignment), and `$casts` (for data types like boolean).
     * `app/Http/Controllers/Api/TaskController.php`: Implemented all the API methods (index, store, show, update, destroy), including validation and using route model binding.
-    * `database/migrations/YYYY_MM_DD_HHMMSS_create_tasks_table.php` (timestamped file): Defined the database structure for the `tasks` table.
+    * `database/migrations/2025_05_19_183849_create_tasks_table.php` (timestamped file): Defined the database structure for the `tasks` table.
     * `routes/api.php`: Set up the API endpoints.
     * `.env`: Ensured this was configured for SQLite (which Laravel did by default)
     * This `README.md` file: To document the project.
